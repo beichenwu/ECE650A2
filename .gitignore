@@ -1,0 +1,5 @@
+*.pdf
+SampleinputA2
+.idea
+cmake-build-debug
+

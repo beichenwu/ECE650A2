@@ -78,29 +78,34 @@ vector<vector<int>> Read_Edge_list(string User_Input, vector<vector<int>> Vertic
 
 vector<int> Find_Start_End(string User_Input){                                                             //Function to find Start End
     vector<int> Start_End_Vector;
-    vector<string> Tmp_Edge_List = String_Split(User_Input, " ");
-    Start_End_Vector.push_back(stoi(Tmp_Edge_List[1]));
-    Start_End_Vector.push_back(stoi(Tmp_Edge_List[2]));
+    vector<string> Tmp_Edge_List = String_Split(User_Input, " ");                                          //Split String by ,
+    Start_End_Vector.push_back(stoi(Tmp_Edge_List[1]));                                                    //Push the first item
+    Start_End_Vector.push_back(stoi(Tmp_Edge_List[2]));                                                    //Push the second item
     return  Start_End_Vector;
 }
 
 vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int>>& VerticesVector, vector<vector<int>> Edge_List){      //A Function to find the connected Vertex
-    int Orgin = Input_Vertex;
-    int Edge_list_Length = Edge_List.size();
-    vector<int> Connected_Vertex;
-    VerticesVector = VerticesVector;
-    for(int i = 0; i < Edge_list_Length; i++){
-        if(Orgin == Edge_List[i][0]){
-            int Tmp_Connected_Vertex = Edge_List[i][1];
-            if(VerticesVector[Tmp_Connected_Vertex][2] != 1){
-                Connected_Vertex.push_back(Tmp_Connected_Vertex);
-                VerticesVector[Tmp_Connected_Vertex][1] = Input_Vertex;
+    int Orgin = Input_Vertex;                                                                                                 //Assign the Input
+    int Edge_list_Length = Edge_List.size();                                                                                  //Assign the length of Edge_list
+    vector<int> Connected_Vertex;                                                                                             //Define the vector list for Connected Vertex
+    VerticesVector = VerticesVector;                                                                                          //Assign the VerticesVector
+    for(int i = 0; i < Edge_list_Length; i++) {                                                                                //Bellman-Ford Search
+        if (Orgin ==
+            Edge_List[i][0]) {                                                                                         //Check if input vertex match
+            int Tmp_Connected_Vertex = Edge_List[i][1];                                                                       //Assign Connected the vertex
+            if (VerticesVector[Tmp_Connected_Vertex][2] !=
+                1) {                                                               //Check if the vertex has been searched or not
+                Connected_Vertex.push_back(Tmp_Connected_Vertex);                                                             //Push to the Vector
+                VerticesVector[Tmp_Connected_Vertex][1] = Input_Vertex;                                                       //Set Parent
+                VerticesVector[Tmp_Connected_Vertex][2] = 1;                                                                 //Searched
             }
-        }else if(Input_Vertex == Edge_List[i][1]){
-            int Tmp_Connected_Vertex = Edge_List[i][0];
-            if(VerticesVector[Tmp_Connected_Vertex][2] != 1){
+        }
+        if (Orgin == Edge_List[i][1]) {                                                                            //Check if input vertex match
+            int Tmp_Connected_Vertex = Edge_List[i][0];                                                                       //Same
+            if (VerticesVector[Tmp_Connected_Vertex][2] != 1) {
                 Connected_Vertex.push_back(Tmp_Connected_Vertex);
                 VerticesVector[Tmp_Connected_Vertex][1] = Input_Vertex;
+                VerticesVector[Tmp_Connected_Vertex][2] = 1;
             }
         }
     }
@@ -110,28 +115,33 @@ vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int>>& Vertice
 }
 
 vector<int> Shortest_Path(int Start, int End, vector<vector<int>>& VerticesVector, vector<vector<int>> Edge_List ){
-    int Start_Vertex =  Start;
-    int End_Vertex = End;
-    int Current_Vertex;
-    int Count = 0;
-    VerticesVector = VerticesVector;
+    int Start_Vertex =  Start;                                                           //Start Vertex
+    int End_Vertex = End;                                                                //End Vertex
+    int Current_Vertex;                                                                  //empty variable to store being search vertex
+    int Count = 0;                                                                       //Count
+    VerticesVector = VerticesVector;                                                     //Empty Vector
     vector<int> Tmp_Vertex_Vector;
     queue<int> Vertex_Queue;
     Vertex_Queue.push(Start);
     vector<int> Short_Path;
 
-    while(Current_Vertex != End && Count < VerticesVector.size()){
-        Current_Vertex = Vertex_Queue.front();
-        Tmp_Vertex_Vector = Find_Connected_Vertex(Current_Vertex, VerticesVector, Edge_List);
-        Vertex_Queue.pop();
+    for(int i = 0; i< VerticesVector.size();i++){                                        //Initialized the VerticesVector
+        VerticesVector[i][1] = -1;
+        VerticesVector[i][2] = 0;
+    }
+
+    while(Current_Vertex != End && Count < VerticesVector.size()){                       //stop if the end vertex been searched
+        Current_Vertex = Vertex_Queue.front();                                           //store the vector into the queue
+        Tmp_Vertex_Vector = Find_Connected_Vertex(Current_Vertex, VerticesVector, Edge_List);            //Find the connected vector
+        Vertex_Queue.pop();                                                                               //Pop the vertex been searched
         for(int i = 0; i < Tmp_Vertex_Vector.size(); i++){
-            Vertex_Queue.push(Tmp_Vertex_Vector[i]);
+            Vertex_Queue.push(Tmp_Vertex_Vector[i]);                                                      //Push the searched vertices
         }
         Count++;
     }
     int Parent_Name = End;
-    while(Parent_Name != -1){
-        Short_Path.push_back(Parent_Name);
+    while(Parent_Name != -1){                                                                      //Check if the End vertex has parent
+        Short_Path.push_back(Parent_Name);                                                         //Loop and push parents
         Parent_Name = VerticesVector[Parent_Name][1];
     }
         return Short_Path;
@@ -141,12 +151,12 @@ vector<int> Shortest_Path(int Start, int End, vector<vector<int>>& VerticesVecto
 string Return_Short_Path(vector<int> Short_Path){
     string Shortest_Path;
     int Count = 0;
-    while(Short_Path.size()!=0){
-        if (Count != 0){
+    while(Short_Path.size()!=0){                                                                 //For Loop and add the string
+        if (Count != 0){                                                                         //Case if not the first vertex
             Shortest_Path = Shortest_Path + "-" + to_string(Short_Path.back());
             Short_Path.pop_back();
         }else{
-            Shortest_Path = Shortest_Path + to_string(Short_Path.back());
+            Shortest_Path = Shortest_Path + to_string(Short_Path.back());                        //Case if for the first vertex
             Short_Path.pop_back();
         }
         Count++;

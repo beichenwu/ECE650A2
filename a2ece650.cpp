@@ -2,11 +2,13 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <sstream>
+#include <cstdlib>
 
 using namespace std;
 
-vector<vector<int>> Create_Node_list(int NumberofVertices, vector<vector<int>>& Edge_List){  //Define an array to store all node information
-    vector<vector<int>> Vertex_Vector;
+vector<vector<int> > Create_Node_list(int NumberofVertices, vector<vector<int> >& Edge_List){  //Define an array to store all node information
+    vector<vector<int> > Vertex_Vector;
 
     for(int i = 0; i < NumberofVertices; i++){  //For Loop to create an array has size equal to number of Vertices
         vector<int> Vertex;                    //Set vector for each vertex
@@ -25,7 +27,7 @@ int Read_Number_Of_Vertices(string User_Input){                //Define an funct
     int String_Length;                                         //a variable to store the length of string
     String_Index = User_Input.find(" ");                       //Locate the position of " "
     String_Length = User_Input.length();                       //The length of the string
-    Number_Of_vertices = stoi(User_Input.substr(String_Index+1, String_Length-String_Index));     //Read the string and get the number of vertex
+    istringstream(User_Input.substr(String_Index+1, String_Length-String_Index)) >> Number_Of_vertices;     //Read the string and get the number of vertex
 
     return  Number_Of_vertices;
 }
@@ -46,7 +48,7 @@ vector<string> String_Split(string String_Input, string Deliminator){           
     return Splited_String;
 }
 
-vector<vector<int>> Read_Edge_list(string User_Input, vector<vector<int>> VerticesVector){                  //Define an function to analyze the user input and return array of edge
+vector<vector<int> > Read_Edge_list(string User_Input, vector<vector<int> > VerticesVector){                  //Define an function to analyze the user input and return array of edge
     int String_Index1;
     int String_Index2;                                                                                      //a variable to find where the space from the input
     int Edge_Number;                                                                                        //a variable to store the number of edge
@@ -55,15 +57,18 @@ vector<vector<int>> Read_Edge_list(string User_Input, vector<vector<int>> Vertic
     vector<string> Tmp_Edge_List = String_Split(Edge_String, "<");                                          //Store the string in a temporary vector
     Edge_Number = Tmp_Edge_List.size();                                                                     //Determine the length of the edge list
                                     //Initialized Pointer for 2D Edge_list
-    vector<vector<int>> Edge_List;
+    vector<vector<int> > Edge_List;
 
     for(int i=0; i < Edge_Number; i++){
         if(i >=1) {                                                                                        //Loop Start from 1(Since index 0 is "E {"
             vector<int> Edge_Pair;
             String_Index1 = Tmp_Edge_List[i].find(",");                                                    //Substring to find the vertex number
             String_Index2 = Tmp_Edge_List[i].find(">");
-            Edge_Pair.push_back(stoi(Tmp_Edge_List[i].substr(0, String_Index1)));
-            Edge_Pair.push_back(stoi(Tmp_Edge_List[i].substr(String_Index1+1, (String_Index2-String_Index1-1))));
+            int tmp_int;
+            istringstream(Tmp_Edge_List[i].substr(0, String_Index1)) >> tmp_int;
+            Edge_Pair.push_back(tmp_int);
+            istringstream(Tmp_Edge_List[i].substr(String_Index1+1, (String_Index2-String_Index1-1))) >> tmp_int;
+            Edge_Pair.push_back(tmp_int);
             Edge_List.push_back(Edge_Pair);                                                                //A Function is needed to validate the edge list
         }
     }
@@ -78,13 +83,16 @@ vector<vector<int>> Read_Edge_list(string User_Input, vector<vector<int>> Vertic
 
 vector<int> Find_Start_End(string User_Input){                                                             //Function to find Start End
     vector<int> Start_End_Vector;
-    vector<string> Tmp_Edge_List = String_Split(User_Input, " ");                                          //Split String by ,
-    Start_End_Vector.push_back(stoi(Tmp_Edge_List[1]));                                                    //Push the first item
-    Start_End_Vector.push_back(stoi(Tmp_Edge_List[2]));                                                    //Push the second item
+    vector<string> Tmp_Edge_List = String_Split(User_Input, " ");                                          //Split String by ","
+    int tmp_int;
+    istringstream(Tmp_Edge_List[1]) >> tmp_int;
+    Start_End_Vector.push_back(tmp_int);                                                    //Push the first item
+    istringstream(Tmp_Edge_List[2]) >> tmp_int;
+    Start_End_Vector.push_back(tmp_int);                                                    //Push the second item
     return  Start_End_Vector;
 }
 
-vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int>>& VerticesVector, vector<vector<int>> Edge_List){      //A Function to find the connected Vertex
+vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int> >& VerticesVector, vector<vector<int> > Edge_List){      //A Function to find the connected Vertex
     int Orgin = Input_Vertex;                                                                                                 //Assign the Input
     int Edge_list_Length = Edge_List.size();                                                                                  //Assign the length of Edge_list
     vector<int> Connected_Vertex;                                                                                             //Define the vector list for Connected Vertex
@@ -114,7 +122,7 @@ vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int>>& Vertice
 
 }
 
-vector<int> Shortest_Path(int Start, int End, vector<vector<int>>& VerticesVector, vector<vector<int>> Edge_List ){
+vector<int> Shortest_Path(int Start, int End, vector<vector<int> >& VerticesVector, vector<vector<int> > Edge_List ){
     int Start_Vertex =  Start;                                                           //Start Vertex
     int End_Vertex = End;                                                                //End Vertex
     int Current_Vertex;                                                                  //empty variable to store being search vertex
@@ -153,10 +161,14 @@ string Return_Short_Path(vector<int> Short_Path){
     int Count = 0;
     while(Short_Path.size()!=0){                                                                 //For Loop and add the string
         if (Count != 0){                                                                         //Case if not the first vertex
-            Shortest_Path = Shortest_Path + "-" + to_string(Short_Path.back());
+            string tmp_string;
+            tmp_string = static_cast<ostringstream*>( &(ostringstream() << Short_Path.back()) )->str();
+            Shortest_Path = Shortest_Path + "-" + tmp_string;
             Short_Path.pop_back();
         }else{
-            Shortest_Path = Shortest_Path + to_string(Short_Path.back());                        //Case if for the first vertex
+            string tmp_string;
+            tmp_string = static_cast<ostringstream*>( &(ostringstream() << Short_Path.back()) )->str();
+            Shortest_Path = Shortest_Path + tmp_string;                        //Case if for the first vertex
             Short_Path.pop_back();
         }
         Count++;
@@ -168,8 +180,8 @@ string Return_Short_Path(vector<int> Short_Path){
 
 int main() {
     string User_Input;                                             //Assign an empty string to read user input
-    vector<vector<int>> VerticesVector;                           //Assign an pointer refer to vertices array
-    vector<vector<int>> Edge_List;                                //Assign an empty vector to store the edge list
+    vector<vector<int> > VerticesVector;                           //Assign an pointer refer to vertices array
+    vector<vector<int> > Edge_List;                                //Assign an empty vector to store the edge list
 
 
     while(true){                                                  //Main loop of the file

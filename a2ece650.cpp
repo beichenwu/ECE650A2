@@ -98,11 +98,9 @@ vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int> >& Vertic
     vector<int> Connected_Vertex;                                                                                             //Define the vector list for Connected Vertex
     VerticesVector = VerticesVector;                                                                                          //Assign the VerticesVector
     for(int i = 0; i < Edge_list_Length; i++) {                                                                                //Bellman-Ford Search
-        if (Orgin ==
-            Edge_List[i][0]) {                                                                                         //Check if input vertex match
+        if (Orgin == Edge_List[i][0]) {                                                                                         //Check if input vertex match
             int Tmp_Connected_Vertex = Edge_List[i][1];                                                                       //Assign Connected the vertex
-            if (VerticesVector[Tmp_Connected_Vertex][2] !=
-                1) {                                                               //Check if the vertex has been searched or not
+            if (VerticesVector[Tmp_Connected_Vertex][2] != 1) {                                                               //Check if the vertex has been searched or not
                 Connected_Vertex.push_back(Tmp_Connected_Vertex);                                                             //Push to the Vector
                 VerticesVector[Tmp_Connected_Vertex][1] = Input_Vertex;                                                       //Set Parent
                 VerticesVector[Tmp_Connected_Vertex][2] = 1;                                                                 //Searched
@@ -117,7 +115,7 @@ vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int> >& Vertic
             }
         }
     }
-    VerticesVector[Input_Vertex][2] = 1;
+    VerticesVector[Orgin][2] = 1;
     return Connected_Vertex;
 
 }
@@ -138,15 +136,16 @@ vector<int> Shortest_Path(int Start, int End, vector<vector<int> >& VerticesVect
         VerticesVector[i][2] = 0;
     }
 
-    while(Current_Vertex != End && Count < VerticesVector.size()){                       //stop if the end vertex been searched
-        Current_Vertex = Vertex_Queue.front();                                           //store the vector into the queue
-        Tmp_Vertex_Vector = Find_Connected_Vertex(Current_Vertex, VerticesVector, Edge_List);            //Find the connected vector
+    do{
+        Current_Vertex = Vertex_Queue.front();                                                            //store the vector into the queue
+        Tmp_Vertex_Vector = Find_Connected_Vertex(Current_Vertex, VerticesVector, Edge_List);             //Find the connected vector
         Vertex_Queue.pop();                                                                               //Pop the vertex been searched
-        for(int i = 0; i < Tmp_Vertex_Vector.size(); i++){
+        for (int i = 0; i < Tmp_Vertex_Vector.size(); i++) {
             Vertex_Queue.push(Tmp_Vertex_Vector[i]);                                                      //Push the searched vertices
         }
         Count++;
-    }
+    }while(Current_Vertex != End && Count < VerticesVector.size() && Vertex_Queue.size() != 0);           //stop if the end vertex been searched or Queue been cleaned
+
     int Parent_Name = End;
     while(Parent_Name != -1){                                                                      //Check if the End vertex has parent
         Short_Path.push_back(Parent_Name);                                                         //Loop and push parents

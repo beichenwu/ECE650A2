@@ -1,6 +1,7 @@
 doctest-1.2.9
+cmake-build-debug
+.idea
 SampleinputA2.txt
 assignment2.pdf
-.idea
-cmake-build-debug
+
 

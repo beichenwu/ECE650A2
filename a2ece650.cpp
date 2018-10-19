@@ -237,6 +237,15 @@ string Return_Short_Path(vector<int> Short_Path){
     return Shortest_Path;
 }
 
+bool Check_Node_Within_Range(int node, int size){
+    if(node >= size) {
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
 TEST_CASE("Return Short Path"){
     vector<vector<int> > edge_list;
     vector<vector<int> > Vertice_list = Create_Node_list(5, edge_list);
@@ -263,7 +272,7 @@ int main(int argc, char** argv) {
     ctx.setOption("abort-after", 5);  // default - stop after 5 failed asserts
     ctx.applyCommandLine(argc, argv); // apply command line - argc / argv
     ctx.setOption("no-breaks", true); // override - don't break in the debugger
-   // ctx.setOption("no-run", true); // override - don't break in the debugger
+    ctx.setOption("no-run", true); // override - don't break in the debugger
     int res = ctx.run();              // run test cases unless with --no-run
     if(ctx.shouldExit())              // query flags (and --exit) rely on this
         return res;                   // propagate the result of the tests
@@ -288,12 +297,18 @@ int main(int argc, char** argv) {
             vector<int> Start_End = Find_Start_End(User_Input);
             int Start_Vertex = Start_End[0];
             int End_Vertex = Start_End[1];
-            vector<int> Path = Shortest_Path(Start_Vertex,End_Vertex,VerticesVector,Edge_List);
-            if (Path.size() == 1){                                 //Error Check for if there is path exist or not
-                cerr << "There is no path exist between these pair of vertices" << endl;
-            }else{
-                string Path_Output = Return_Short_Path(Path);
-                cout<<Path_Output<<endl;
+            if((!Check_Node_Within_Range(Start_Vertex, VerticesVector.size())) || (!Check_Node_Within_Range(End_Vertex, VerticesVector.size()))){
+                cerr << "The Start and End Vertex are out of range " << endl;
+            }
+            else {
+                vector<int> Path = Shortest_Path(Start_Vertex,End_Vertex,VerticesVector,Edge_List);
+                if (Path.size() == 1) {                                 //Error Check for if there is path exist or not
+                    cerr << "There is no path exist between these pair of vertices" << endl;
+                }
+                else{
+                    string Path_Output = Return_Short_Path(Path);
+                    cout<<Path_Output<<endl;
+                }
             }
         }
         else {                                             //This should return an error to user for wrong command

@@ -4,6 +4,3 @@
 CMakeFiles/Assignment2.dir/a2ece650.cpp.o: ../a2ece650.cpp
 CMakeFiles/Assignment2.dir/a2ece650.cpp.o: ../doctest-1.2.9/doctest/doctest.h
 
-CMakeFiles/Assignment2.dir/test.cpp.o: ../test.cpp
-CMakeFiles/Assignment2.dir/test.cpp.o: ../test.h
-

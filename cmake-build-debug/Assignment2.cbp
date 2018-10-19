@@ -87,12 +87,6 @@
 		<Unit filename="/home/wu/Desktop/Waterloo/ECE650/Assignment2/a2ece650.cpp">
 			<Option target="Assignment2"/>
 		</Unit>
-		<Unit filename="/home/wu/Desktop/Waterloo/ECE650/Assignment2/test.cpp">
-			<Option target="Assignment2"/>
-		</Unit>
-		<Unit filename="/home/wu/Desktop/Waterloo/ECE650/Assignment2/test.h">
-			<Option target="Assignment2"/>
-		</Unit>
 		<Unit filename="/home/wu/Desktop/Waterloo/ECE650/Assignment2/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

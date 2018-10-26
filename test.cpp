@@ -2,7 +2,7 @@
 // Created by wu on 10/18/18.
 //
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest-1.2.9/doctest/doctest.h"
+#include "doctest.h"
 #include <iostream>
 #include <string>
 #include <vector>

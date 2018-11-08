@@ -6,6 +6,7 @@
 #include <cstdlib>
 using namespace std;
 
+
 vector<vector<int> > Create_Node_list(int NumberofVertices, vector<vector<int> >& Edge_List){  //Define an array to store all node information
     vector<vector<int> > Vertex_Vector;
     for(int i = 0; i < NumberofVertices; i++){  //For Loop to create an array has size equal to number of Vertices
@@ -67,8 +68,8 @@ vector<vector<int> > Read_Edge_list(string User_Input, vector<vector<int> > Vert
         }
     }
     for(int i = 0; i < Edge_List.size(); i++){                                                             //Error Check
-        if(Edge_List[i][0]> Node_Length || Edge_List[i][1]> Node_Length ){
-            cerr << "Edge List contains nodes beyond the node list" << endl;
+        if(Edge_List[i][0]> (Node_Length-1) || Edge_List[i][1]> (Node_Length-1) ){
+            cerr << "Error: Edge List contains nodes beyond the node list" << endl;
             break;
         }
     }
@@ -113,12 +114,12 @@ vector<int> Find_Connected_Vertex(int Input_Vertex, vector<vector<int> >& Vertic
     return Connected_Vertex;
 }
 
-vector<int> Shortest_Path(int Start, int End, vector<vector<int> >& VerticesVector, vector<vector<int> > Edge_List ){
+vector<int> Shortest_Path(int Start, int End, vector<vector<int> > &VerticesVector, vector<vector<int> > Edge_List ){
     int Start_Vertex =  Start;                                                           //Start Vertex
     int End_Vertex = End;                                                                //End Vertex
     int Current_Vertex;                                                                  //empty variable to store being search vertex
     int Count = 0;                                                                       //Count
-    VerticesVector = VerticesVector;                                                     //Empty Vector
+    //VerticesVector = VerticesVector;                                                     //Empty Vector
     vector<int> Tmp_Vertex_Vector;
     queue<int> Vertex_Queue;
     Vertex_Queue.push(Start_Vertex);
@@ -176,11 +177,11 @@ bool Check_Node_Within_Range(int node, int size){                //Check if the 
 }
 
 int main(int argc, char** argv) {
-
     string User_Input;                                             //Assign an empty string to read user input
     vector<vector<int> > VerticesVector;                           //Assign an pointer refer to vertices array
     vector<vector<int> > Edge_List;                                //Assign an empty vector to store the edge list
     while(true){                                                  //Main loop of the file
+
         getline(cin, User_Input);                                 //Take system standard input
         if(User_Input == ""){                                      //Exit the program if user input empty string
             break;
@@ -189,6 +190,7 @@ int main(int argc, char** argv) {
             int Number_Of_Vertices;                                //Create a variable to store the number of vertices
             Number_Of_Vertices = Read_Number_Of_Vertices(User_Input);
             VerticesVector = Create_Node_list(Number_Of_Vertices, Edge_List);                     //Create the node list
+
         }
         else if(User_Input.substr(0,1) == "E"){                    //For the case the user input edge set
             Edge_List = Read_Edge_list(User_Input, VerticesVector);
@@ -197,13 +199,15 @@ int main(int argc, char** argv) {
             vector<int> Start_End = Find_Start_End(User_Input);
             int Start_Vertex = Start_End[0];
             int End_Vertex = Start_End[1];
+
+
             if((!Check_Node_Within_Range(Start_Vertex, VerticesVector.size())) || (!Check_Node_Within_Range(End_Vertex, VerticesVector.size()))){
-                cerr << "The Start and End Vertex are out of range " << endl;
+                cerr << "Error: The Start and End Vertex are out of range " << endl;
             }
             else {
                 vector<int> Path = Shortest_Path(Start_Vertex,End_Vertex,VerticesVector,Edge_List);
                 if (Path.size() == 1) {                                 //Error Check for if there is path exist or not
-                    cerr << "There is no path exist between these pair of vertices" << endl;
+                    cerr << "Error: There is no path exist between these pair of vertices" << endl;
                 }
                 else{
                     string Path_Output = Return_Short_Path(Path);
@@ -214,8 +218,6 @@ int main(int argc, char** argv) {
         else {                                             //This should return an error to user for wrong command
         }
     }
-
-    cout << "Finish reading input" << endl;
     return 0;
     exit (EXIT_FAILURE);
 }
